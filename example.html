@@ -1,0 +1,338 @@
+<html>
+<head>
+<style type="text/css">
+.hidden {display:none}
+.shown {display:inline}
+</style>
+<title>Drawlib2dv Example Page</title>
+<script language="JavaScript" type="text/javascript" src="drawlib2dv.min.js"> </script>
+<script language="JavaScript" type="text/javascript" src="example.min.js"> </script>
+</head>
+
+<body onload= "initDrawing();">
+
+<div id="drawing_pane" style="position:absolute; left:290px; top:2px;">
+<canvas id="drawing_canvas" width="1000" height="1000"></canvas>
+</div>
+
+<div id="control_pane" style="position:absolute; left:5px; top:2px;">
+<button id="rect_button" onclick="setMouseMode(DRAWAPP.mousePlaceRect);">Rectangle</button>
+<button id="circ_button" onclick="setMouseMode(DRAWAPP.mousePlaceEllipse);">Circle</button>
+<button id="line_button" onclick="setMouseMode(DRAWAPP.mousePlaceLine);">Line</button>
+<br />
+<button id="freehand_button" onclick="setMouseMode(DRAWAPP.mousePlaceFreehand);">Freehand</button>
+<button id="text_button" onclick="setMouseMode(DRAWAPP.mousePlaceText);">Text</button>
+<hr />
+<button id="select_button" onclick="setMouseMode(DRAWAPP.mouseSelect);">Select</button>
+<button id="group_button" onclick="setMouseMode(DRAWAPP.mouseSelectGroup);">Group Select</button>
+<button onclick="showDiv('choose_colour_div');">Colors</button>
+<hr />
+<button id="panup_button" onclick="appPanUp();">Pan Up</button>
+<button id="pandown_button" onclick="appPanDown();">Pan Down</button>
+<br />
+<button id="panleft_button" onclick="appPanLeft();">Pan Left</button>
+<button id="panright_button" onclick="appPanRight();">Pan Right</button>
+<br />
+<button id="zoomin_button" onclick="appZoomIn();">Zoom In</button>
+<button id="zoomout_button" onclick="appZoomOut();">Zoom Out</button>
+<hr />
+<button id="size_button" onclick="setSizeDialog();">Resize</button>
+<button id="export_button" onclick="DRAWAPP.pic.redrawAllToImageWindow();">Export</button>
+<button onclick="showDiv('help_div');">Help</button>
+
+</div>
+
+<div class="hidden" id="help_div" style="z-index:2; position:absolute; left:10px; top:10px; width:600px; outline:grey solid thick; background-color:#ffffff;">
+<p>This drawing is a vector drawing, rather than a paint-style
+drawing. All drawing items that you place can be altered or deleted, you do not just
+set pixels.</p>
+
+<p>The drawing normally starts at a size of 1000 by 1000 units and you can zoom and
+pan around.</p>
+
+<p>You can place drawing items by pressing the relevant button for the type of drawing
+item images here.  To place <b>Rectangles</b> and <b>Circles</b>, place the cursor and then drag to
+set diagonal corners. To place <b>Text</b> click to place the centre of the text and you will
+be prompted for the text. To draw a <b>Freehand</b> line trace the shape.  To draw a straight
+<b>Line</b> place the cursor for the start point and then drag to place the end point.</p>
+
+<p>When you place a drawing item it will be created with a default line colour, fill
+colour, line thickness and font size, as appropriate. You can change the default
+settings before you place an item by selecting the <b>Colors</b> button.  Alternatively, you can
+change the properties of a drawing item after placing it.</p>
+
+<p>To alter an existing drawing item, select the <b>Select</b> button. You can then select a
+drawing item by clicking on it. This will bring up a dialog that allows you to change
+colour and other properties.  The dialog also allows you to delete an item.</p>
+
+<p>You can also select an item and drag it to change its position.</p>
+
+<p>You can change the "Z" rating of an item to move it in front of or behind other items.</p>
+
+<p>You can group items together by pressing the <b>Group Select</b> button. Drag to select a rectangle and all items that are wholly within 
+the rectangle will be includedin the group.  Once you have a group, if you select and drag one item in the group then all items are dragged
+together.  If you select an item that is in a group then you can remove that item from the group or remove all items from the group.
+</p>
+
+<p>You can export a copy of the drawing locally by
+pressing the <b>Export</b> button. This opens another browser window containing the drawing
+as an image. You can then save this locally to your computer.</p>
+
+<button onclick="hideDiv();">Close</button>
+</div>
+
+<div class="hidden" id="rect_div" style="z-index:2; position:absolute; left:10px; top:10px; width:350px; outline:grey solid thick; background-color:#ffffff;">
+<b>&nbsp;Rectangle Properties</b>
+<table>
+<tr><td style="text-align:right">Width:</td><td><input type="text" id="rect_width" size="6" value=""/></td><td style="text-align:right">Height:</td><td><input type="text" id="rect_height" size="6" value=""/></td></tr>
+<tr><td style="text-align:right">Rotation:</td><td><input type="text" id="rect_rotation" size="4" value=""/></td></tr>
+</table>
+&nbsp;Line Colour:<br />&nbsp;
+
+<button id="rlc000000" onclick="setItemLineStyle('#000000', 'rlc000000');" style="background:#000000">&nbsp;</button>
+<button id="rlcFF0000" onclick="setItemLineStyle('#FF0000', 'rlcFF0000');" style="background:#FF0000">&nbsp;</button>
+<button id="rlc00FF00" onclick="setItemLineStyle('#00FF00', 'rlc00FF00');" style="background:#00FF00">&nbsp;</button>
+<button id="rlc0000FF" onclick="setItemLineStyle('#0000FF', 'rlc0000FF');" style="background:#0000FF">&nbsp;</button>
+<button id="rlc00FFFF" onclick="setItemLineStyle('#00FFFF', 'rlc00FFFF');" style="background:#00FFFF">&nbsp;</button>
+<button id="rlcFF00FF" onclick="setItemLineStyle('#FF00FF', 'rlcFF00FF');" style="background:#FF00FF">&nbsp;</button>
+<button id="rlcFFFF00" onclick="setItemLineStyle('#FFFF00', 'rlcFFFF00');" style="background:#FFFF00">&nbsp;</button>
+<button id="rlcFFFFFF" onclick="setItemLineStyle('#FFFFFF', 'rlcFFFFFF');" style="background:#FFFFFF">&nbsp;</button>
+<br />&nbsp;Line Width:<br />&nbsp;
+<button id="rlw1" onclick="setItemLineWidth(1, 'rlw1');">1</button>
+<button id="rlw2" onclick="setItemLineWidth(2, 'rlw2');">2</button>
+<button id="rlw3" onclick="setItemLineWidth(3, 'rlw3');">3</button>
+<button id="rlw5" onclick="setItemLineWidth(5, 'rlw5');">5</button>
+
+<br />&nbsp;Fill Colour:<br />&nbsp;
+<button id="rfc000000" onclick="setItemFillStyle('#000000', 'rfc000000');" style="background:#000000">&nbsp;</button>
+<button id="rfcFF0000" onclick="setItemFillStyle('#FF0000', 'rfcFF0000');" style="background:#FF0000">&nbsp;</button>
+<button id="rfc00FF00" onclick="setItemFillStyle('#00FF00', 'rfc00FF00');" style="background:#00FF00">&nbsp;</button>
+<button id="rfc0000FF" onclick="setItemFillStyle('#0000FF', 'rfc0000FF');" style="background:#0000FF">&nbsp;</button>
+<button id="rfc00FFFF" onclick="setItemFillStyle('#00FFFF', 'rfc00FFFF');" style="background:#00FFFF">&nbsp;</button>
+<button id="rfcFF00FF" onclick="setItemFillStyle('#FF00FF', 'rfcFF00FF');" style="background:#FF00FF">&nbsp;</button>
+<button id="rfcFFFF00" onclick="setItemFillStyle('#FFFF00', 'rfcFFFF00');" style="background:#FFFF00">&nbsp;</button>
+<button id="rfcFFFFFF" onclick="setItemFillStyle('#FFFFFF', 'rfcFFFFFF');" style="background:#FFFFFF">&nbsp;</button>
+<button id="rfc" onclick="setItemFillStyle('', 'rfc');">No Fill</button>
+
+<br />&nbsp;"Z" Position Forwards or Backwards<br />&nbsp;
+<button onclick="setZRel(1);">Forward 1</button> &nbsp;
+<button onclick="setZAbs(1);">Forward Full</button> &nbsp;
+<br />
+<button onclick="setZRel(-1);">Backward 1</button> &nbsp;
+<button onclick="setZAbs(-1);">Backward Full</button><br />
+<table class="hidden" id="rect_group_p"><tr>
+<td style="text-align:center">Remove from Group <br /><button onclick="setItemRemoveFromGroup();"><img src="/static/pics/group_select.png"/></button></td>
+<td style="text-align:center">Remove All from group <br /><button onclick="setItemDissolveGroup();"><img src="/static/pics/group_delete.png"/></button></td>
+</tr></table>
+<button onclick="saveItemSettings();">OK</button>&nbsp;
+<button onclick="deleteItemFromPage();">Delete Item</button>&nbsp;
+<button onclick="hideDiv();">Cancel</button>
+
+</div>
+
+<div class="hidden" id="circ_div" style="z-index:2; position:absolute; left:10px; top:10px; width:350px; outline:grey solid thick; background-color:#ffffff;">
+<b>&nbsp;Circle Properties</b>
+<table>
+<tr><td style="text-align:right">Radius:</td><td><input type="text" id="circ_radius" size="6" value=""/></td></tr>
+</table>
+&nbsp;Line Colour:<br />&nbsp;
+<button id="clc000000" onclick="setItemLineStyle('#000000', 'clc000000');" style="background:#000000">&nbsp;</button>
+<button id="clcFF0000" onclick="setItemLineStyle('#FF0000', 'clcFF0000');" style="background:#FF0000">&nbsp;</button>
+<button id="clc00FF00" onclick="setItemLineStyle('#00FF00', 'clc00FF00');" style="background:#00FF00">&nbsp;</button>
+<button id="clc0000FF" onclick="setItemLineStyle('#0000FF', 'clc0000FF');" style="background:#0000FF">&nbsp;</button>
+<button id="clc00FFFF" onclick="setItemLineStyle('#00FFFF', 'clc00FFFF');" style="background:#00FFFF">&nbsp;</button>
+<button id="clcFF00FF" onclick="setItemLineStyle('#FF00FF', 'clcFF00FF');" style="background:#FF00FF">&nbsp;</button>
+
+<button id="clcFFFF00" onclick="setItemLineStyle('#FFFF00', 'clcFFFF00');" style="background:#FFFF00">&nbsp;</button>
+<button id="clcFFFFFF" onclick="setItemLineStyle('#FFFFFF', 'clcFFFFFF');" style="background:#FFFFFF">&nbsp;</button>
+<br />&nbsp;Line Width:<br />&nbsp;
+<button id="clw1" onclick="setItemLineWidth(1, 'clw1');">1</button>
+<button id="clw2" onclick="setItemLineWidth(2, 'clw2');">2</button>
+<button id="clw3" onclick="setItemLineWidth(3, 'clw3');">3</button>
+<button id="clw5" onclick="setItemLineWidth(5, 'clw5');">5</button>
+<br />&nbsp;Fill Colour:<br />&nbsp;
+<button id="cfc000000" onclick="setItemFillStyle('#000000', 'cfc000000');" style="background:#000000">&nbsp;</button>
+<button id="cfcFF0000" onclick="setItemFillStyle('#FF0000', 'cfcFF0000');" style="background:#FF0000">&nbsp;</button>
+<button id="cfc00FF00" onclick="setItemFillStyle('#00FF00', 'cfc00FF00');" style="background:#00FF00">&nbsp;</button>
+
+<button id="cfc0000FF" onclick="setItemFillStyle('#0000FF', 'cfc0000FF');" style="background:#0000FF">&nbsp;</button>
+<button id="cfc00FFFF" onclick="setItemFillStyle('#00FFFF', 'cfc00FFFF');" style="background:#00FFFF">&nbsp;</button>
+<button id="cfcFF00FF" onclick="setItemFillStyle('#FF00FF', 'cfcFF00FF');" style="background:#FF00FF">&nbsp;</button>
+<button id="cfcFFFF00" onclick="setItemFillStyle('#FFFF00', 'cfcFFFF00');" style="background:#FFFF00">&nbsp;</button>
+<button id="cfcFFFFFF" onclick="setItemFillStyle('#FFFFFF', 'cfcFFFFFF');" style="background:#FFFFFF">&nbsp;</button>
+<button id="cfc" onclick="setItemFillStyle('', 'cfc');">No Fill</button>
+<br />&nbsp;"Z" Position Forwards or Backwards<br />&nbsp;
+<button onclick="setZRel(1);">Forward 1</button> &nbsp;
+<button onclick="setZAbs(1);">Forward Full</button> &nbsp;
+<br />
+<button onclick="setZRel(-1);">Backward 1</button> &nbsp;
+<button onclick="setZAbs(-1);">Backward Full</button><br />
+
+<table class="hidden" id="circ_group_p"><tr>
+
+<td style="text-align:center">Remove from Group <br /><button onclick="setItemRemoveFromGroup();"><img src="/static/pics/group_select.png"/></button></td>
+<td style="text-align:center">Remove All from group <br /><button onclick="setItemDissolveGroup();"><img src="/static/pics/group_delete.png"/></button></td>
+</tr></table>
+<button onclick="saveItemSettings();">OK</button>&nbsp;
+<button onclick="deleteItemFromPage();">Delete Item</button>&nbsp;
+<button onclick="hideDiv();">Cancel</button>
+</div>
+
+<div class="hidden" id="poly_div" style="z-index:2; position:absolute; left:10px; top:10px; width:350px; outline:grey solid thick; background-color:#ffffff;">
+<b>&nbsp;Line Properties</b>
+<br />&nbsp;Line Colour:<br />&nbsp;
+
+<button id="llc000000" onclick="setItemLineStyle('#000000', 'llc000000');" style="background:#000000">&nbsp;</button>
+<button id="llcFF0000" onclick="setItemLineStyle('#FF0000', 'llcFF0000');" style="background:#FF0000">&nbsp;</button>
+<button id="llc00FF00" onclick="setItemLineStyle('#00FF00', 'llc00FF00');" style="background:#00FF00">&nbsp;</button>
+<button id="llc0000FF" onclick="setItemLineStyle('#0000FF', 'llc0000FF');" style="background:#0000FF">&nbsp;</button>
+<button id="llc00FFFF" onclick="setItemLineStyle('#00FFFF', 'llc00FFFF');" style="background:#00FFFF">&nbsp;</button>
+<button id="llcFF00FF" onclick="setItemLineStyle('#FF00FF', 'llcFF00FF');" style="background:#FF00FF">&nbsp;</button>
+<button id="llcFFFF00" onclick="setItemLineStyle('#FFFF00', 'llcFFFF00');" style="background:#FFFF00">&nbsp;</button>
+<button id="llcFFFFFF" onclick="setItemLineStyle('#FFFFFF', 'llcFFFFFF');" style="background:#FFFFFF">&nbsp;</button>
+<br />&nbsp;Line Width:<br />&nbsp;
+<button id="llw1" onclick="setItemLineWidth(1, 'llw1');">1</button>
+<button id="llw2" onclick="setItemLineWidth(2, 'llw2');">2</button>
+<button id="llw3" onclick="setItemLineWidth(3, 'llw3');">3</button>
+<button id="llw5" onclick="setItemLineWidth(5, 'llw5');">5</button>
+
+<br />&nbsp;"Z" Position Forwards or Backwards<br />&nbsp;
+<button onclick="setZRel(1);">Forward 1</button> &nbsp;
+<button onclick="setZAbs(1);">Forward Full</button> &nbsp;
+<br />
+<button onclick="setZRel(-1);">Backward 1</button> &nbsp;
+<button onclick="setZAbs(-1);">Backward Full</button><br />
+<table class="hidden" id="poly_group_p"><tr>
+<td style="text-align:center">Remove from Group <br /><button onclick="setItemRemoveFromGroup();"><img src="/static/pics/group_select.png"/></button></td>
+<td style="text-align:center">Remove All from group <br /><button onclick="setItemDissolveGroup();"><img src="/static/pics/group_delete.png"/></button></td>
+</tr></table>
+<button onclick="saveItemSettings();">OK</button>&nbsp;
+
+<button onclick="deleteItemFromPage();">Delete Item</button>&nbsp;
+<button onclick="hideDiv();">Cancel</button>
+</div>
+
+<div class="hidden" id="text_div" style="z-index:2; position:absolute; left:10px; top:10px; width:350px; outline:grey solid thick; background-color:#ffffff;">
+<b>&nbsp;Text Properties</b><br />
+<table width="100%">
+<tr><td style="text-align:right">Rotation:</td><td><input type="text" id="text_rotation" size="4" value=""/></td>
+<td style="text-align:right">Font Size:</td><td><input type="text" id="text_size" size="4" value=""/></td></tr>
+</table>
+&nbsp;Text Colour:<br />&nbsp;
+
+<button id="ttc000000" onclick="setItemFontColor('#000000', 'ttc000000');" style="background:#000000">&nbsp;</button>
+<button id="ttcFF0000" onclick="setItemFontColor('#FF0000', 'ttcFF0000');" style="background:#FF0000">&nbsp;</button>
+<button id="ttc00FF00" onclick="setItemFontColor('#00FF00', 'ttc00FF00');" style="background:#00FF00">&nbsp;</button>
+<button id="ttc0000FF" onclick="setItemFontColor('#0000FF', 'ttc0000FF');" style="background:#0000FF">&nbsp;</button>
+<button id="ttc00FFFF" onclick="setItemFontColor('#00FFFF', 'ttc00FFFF');" style="background:#00FFFF">&nbsp;</button>
+<button id="ttcFF00FF" onclick="setItemFontColor('#FF00FF', 'ttcFF00FF');" style="background:#FF00FF">&nbsp;</button>
+<button id="ttcFFFF00" onclick="setItemFontColor('#FFFF00', 'ttcFFFF00');" style="background:#FFFF00">&nbsp;</button>
+<button id="ttcFFFFFF" onclick="setItemFontColor('#FFFFFF', 'ttcFFFFFF');" style="background:#FFFFFF">&nbsp;</button>
+<br />
+&nbsp;Text: <input type="text" id="id_body_text" /><br />
+&nbsp;Text in Box: <input type="checkbox" id="text_box_check" onclick="clickTextBox();"/><br />
+<div id="text_box_div">
+<table width="100%">
+<tr><td style="text-align:right">Width:</td><td><input type="text" id="text_box_width" size="6" value=""/></td><td style="text-align:right">Height:</td><td><input type="text" id="text_box_height" size="6" value=""/></td></tr>
+
+</table>
+&nbsp;Line Colour:<br />&nbsp;
+<button id="tlc000000" onclick="setItemLineStyle('#000000', 'tlc000000');" style="background:#000000">&nbsp;</button>
+<button id="tlcFF0000" onclick="setItemLineStyle('#FF0000', 'tlcFF0000');" style="background:#FF0000">&nbsp;</button>
+<button id="tlc00FF00" onclick="setItemLineStyle('#00FF00', 'tlc00FF00');" style="background:#00FF00">&nbsp;</button>
+<button id="tlc0000FF" onclick="setItemLineStyle('#0000FF', 'tlc0000FF');" style="background:#0000FF">&nbsp;</button>
+<button id="tlc00FFFF" onclick="setItemLineStyle('#00FFFF', 'tlc00FFFF');" style="background:#00FFFF">&nbsp;</button>
+<button id="tlcFF00FF" onclick="setItemLineStyle('#FF00FF', 'tlcFF00FF');" style="background:#FF00FF">&nbsp;</button>
+<button id="tlcFFFF00" onclick="setItemLineStyle('#FFFF00', 'tlcFFFF0');" style="background:#FFFF00">&nbsp;</button>
+<button id="tlcFFFFFF" onclick="setItemLineStyle('#FFFFFF', 'tlcFFFFFF');" style="background:#FFFFFF">&nbsp;</button>
+<br />&nbsp;Line Width:<br />&nbsp;
+<button id="tlw1" onclick="setItemLineWidth(1, 'tlw1');">1</button>
+<button id="tlw2" onclick="setItemLineWidth(2, 'tlw2');">2</button>
+
+<button id="tlw3" onclick="setItemLineWidth(3, 'tlw3');">3</button>
+<button id="tlw5" onclick="setItemLineWidth(5, 'tlw5');">5</button>
+<br />&nbsp;Fill Colour:<br />&nbsp;
+<button id="tfc000000" onclick="setItemFillStyle('#000000', 'tfc000000');" style="background:#000000">&nbsp;</button>
+<button id="tfcFF0000" onclick="setItemFillStyle('#FF0000', 'tfcFF0000');" style="background:#FF0000">&nbsp;</button>
+<button id="tfc00FF00" onclick="setItemFillStyle('#00FF00', 'tfc00FF00');" style="background:#00FF00">&nbsp;</button>
+<button id="tfc0000FF" onclick="setItemFillStyle('#0000FF', 'tfc0000FF');" style="background:#0000FF">&nbsp;</button>
+<button id="tfc00FFFF" onclick="setItemFillStyle('#00FFFF', 'tfc00FFFF');" style="background:#00FFFF">&nbsp;</button>
+<button id="tfcFF00FF" onclick="setItemFillStyle('#FF00FF', 'tfcFF00FF');" style="background:#FF00FF">&nbsp;</button>
+<button id="tfcFFFF00" onclick="setItemFillStyle('#FFFF00', 'tfcFFFF00');" style="background:#FFFF00">&nbsp;</button>
+<button id="tfcFFFFFF" onclick="setItemFillStyle('#FFFFFF', 'tfcFFFFFF');" style="background:#FFFFFF">&nbsp;</button>
+<button id="tfc" onclick="setItemFillStyle('', 'tfc');">No Fill</button>
+</div>
+
+<br /><p id="text_z_butt">
+&nbsp;"Z" Position Forwards or Backwards<br />&nbsp;
+<button onclick="setZRel(1);">Forward 1</button> &nbsp;
+<button onclick="setZAbs(1);">Forward Full</button> &nbsp;
+<br />
+<button onclick="setZRel(-1);">Backward 1</button> &nbsp;
+<button onclick="setZAbs(-1);">Backward Full</button><br />
+<table class="hidden" id="text_group_p"><tr>
+<td style="text-align:center">Remove from Group <br /><button onclick="setItemRemoveFromGroup();"><img src="/static/pics/group_select.png"/></button></td>
+<td style="text-align:center">Remove All from group <br /><button onclick="setItemDissolveGroup();"><img src="/static/pics/group_delete.png"/></button></td>
+</tr></table><br />
+<button onclick="saveItemSettings();">OK</button>&nbsp;
+
+<button onclick="deleteItemFromPage();">Delete Item</button>&nbsp;
+<button onclick="hideDiv();">Cancel</button>
+</div>
+
+<div class="hidden" id="choose_colour_div" style="z-index:2; position:absolute; left:10px; top:10px; width:350px; outline:grey solid thick; background-color:#ffffff;">
+<b>&nbsp;Properties for new drawing items</b>
+<br />&nbsp;Line Colour:<br />&nbsp;
+<button id="nlc000000" onclick="setLineStyle('#000000', 'nlc000000');" style="background:#000000">&nbsp;</button>
+<button id="nlcFF0000" onclick="setLineStyle('#FF0000', 'nlcFF0000');" style="background:#FF0000">&nbsp;</button>
+<button id="nlc00FF00" onclick="setLineStyle('#00FF00', 'nlc00FF00');" style="background:#00FF00">&nbsp;</button>
+<button id="nlc0000FF" onclick="setLineStyle('#0000FF', 'nlc0000FF');" style="background:#0000FF">&nbsp;</button>
+<button id="nlc00FFFF" onclick="setLineStyle('#00FFFF', 'nlc00FFFF');" style="background:#00FFFF">&nbsp;</button>
+<button id="nlcFF00FF" onclick="setLineStyle('#FF00FF', 'nlcFF00FF');" style="background:#FF00FF">&nbsp;</button>
+
+<button id="nlcFFFF00" onclick="setLineStyle('#FFFF00', 'nlcFFFF00');" style="background:#FFFF00">&nbsp;</button>
+<button id="nlcFFFFFF" onclick="setLineStyle('#FFFFFF', 'nlcFFFFFF');" style="background:#FFFFFF">&nbsp;</button>
+<br />&nbsp;Line Width:<br />&nbsp;
+<button id="nlw1" onclick="setLineWidth(1, 'nlw1');">1</button>
+<button id="nlw2" onclick="setLineWidth(2, 'nlw2');">2</button>
+<button id="nlw3" onclick="setLineWidth(3, 'nlw3');">3</button>
+<button id="nlw5" onclick="setLineWidth(5, 'nlw5');">5</button>
+<br />&nbsp;Fill Colour:<br />&nbsp;
+<button id="nfc000000" onclick="setFillStyle('#000000', 'nfc000000');" style="background:#000000">&nbsp;</button>
+<button id="nfcFF0000" onclick="setFillStyle('#FF0000', 'nfcFF0000');" style="background:#FF0000">&nbsp;</button>
+<button id="nfc00FF00" onclick="setFillStyle('#00FF00', 'nfc00FF00');" style="background:#00FF00">&nbsp;</button>
+
+<button id="nfc0000FF" onclick="setFillStyle('#0000FF', 'nfc0000FF');" style="background:#0000FF">&nbsp;</button>
+<button id="nfc00FFFF" onclick="setFillStyle('#00FFFF', 'nfc00FFFF');" style="background:#00FFFF">&nbsp;</button>
+<button id="nfcFF00FF" onclick="setFillStyle('#FF00FF', 'nfcFF00FF');" style="background:#FF00FF">&nbsp;</button>
+<button id="nfcFFFF00" onclick="setFillStyle('#FFFF00', 'nfcFFFF00');" style="background:#FFFF00">&nbsp;</button>
+<button id="nfcFFFFFF" onclick="setFillStyle('#FFFFFF', 'nfcFFFFFF');" style="background:#FFFFFF">&nbsp;</button>
+<button id="nfc" onclick="setFillStyle('', 'nfc');">No Fill</button>
+<br />
+&nbsp;Text Colour:<br />&nbsp;
+<button id="ntc000000" onclick="setFontColor('#000000', 'ntc000000');" style="background:#000000">&nbsp;</button>
+<button id="ntcFF0000" onclick="setFontColor('#FF0000', 'ntcFF0000');" style="background:#FF0000">&nbsp;</button>
+<button id="ntc00FF00" onclick="setFontColor('#00FF00', 'ntc00FF00');" style="background:#00FF00">&nbsp;</button>
+<button id="ntc0000FF" onclick="setFontColor('#0000FF', 'ntc0000FF');" style="background:#0000FF">&nbsp;</button>
+<button id="ntc00FFFF" onclick="setFontColor('#00FFFF', 'ntc00FFFF');" style="background:#00FFFF">&nbsp;</button>
+<button id="ntcFF00FF" onclick="setFontColor('#FF00FF', 'ntcFF00FF');" style="background:#FF00FF">&nbsp;</button>
+<button id="ntcFFFF00" onclick="setFontColor('#FFFF00', 'ntcFFFF00');" style="background:#FFFF00">&nbsp;</button>
+
+<button id="ntcFFFFFF" onclick="setFontColor('#FFFFFF', 'ntcFFFFFF');" style="background:#FFFFFF">&nbsp;</button>
+<br />
+&nbsp;Font Size: <input type="text" size="4" id="new_text_size" maxlength="4" value="" onchange="setNewTextSize();"/>
+<br /><button onclick="hideDiv();">Close</button>
+</div>
+
+<div class="hidden" id="drawing_admin_div" style="z-index:2; position:absolute; left:10px; top:10px; width:320px; outline:grey solid thick; background-color:#ffffff;">
+&nbsp;Width: <input type="text" id="drwg_width" size="6" value=""/>&nbsp;
+Height: <input type="text" id="drwg_height" size="6" value=""/>
+<br />
+<button id="set_size_btn" onclick="setSize();">Set Size</button>&nbsp;
+<button onclick="hideDiv();">Cancel</button>
+
+</div>
+
+</body>
+</html>
+

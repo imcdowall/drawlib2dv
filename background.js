@@ -1,4 +1,4 @@
-//Copyright (c) 2009-2011, Ian McDowall
+//Copyright (c) 2009-2020, Ian McDowall
 //All rights reserved.
 //
 //Redistribution and use in source and binary forms, with or without 
@@ -106,43 +106,46 @@ DRAWLIB.m_doDrawBack = function(ctxt, canvasWidth, canvasHeight, window) {
     var pic = this.p_pic;
     var winRot = pic.p_rotation;
     ctxt.save();
+    // Note, for some reason, rotation though 90 / 270 degrees messes up the
+    // image. Use the 4-image approach for more success.
+    // It must be a bug in the way that I handle rotation but I cannot see it for now
     ctxt.translate(canvasWidth/2, canvasHeight/2);
     ctxt.rotate(-Math.PI*winRot*0.5);
     ctxt.translate(-canvasWidth/2, -canvasHeight/2);
 
     var wb = pic.p_windowBoundary;
-    var iwScale = this.p_width / wb[2] ;
     // Work out the image section based on rotation
     var icSect = [0, 0];
     if (winRot == 0 || winRot == 2) {
+        var iwScale = this.p_width / wb[2] ;
         var iTL = [ iwScale * window[0], iwScale * window[1] ];
         // icScale is the number of image pixels per canvas pixel
         var icScale =  (canvasWidth / this.p_width) * (wb[2]) / (window[2]) ;
         iSect = [ canvasWidth/icScale, canvasHeight/icScale];
         //alert("Window boundary "+wb[0]+","+wb[1]+" "+wb[2]+","+wb[3]+
-        //    " Supplied window "+window[0]+","+window[1]+" "+window[2]+","+window[3]+
-        //    " canvas "+canvasWidth+","+canvasHeight+
+        //    " viewport window "+window[0]+","+window[1]+" "+window[2]+","+window[3])
+        //alert("canvas "+canvasWidth+","+canvasHeight)
+        //alert(
         //    " image size="+this.p_width+","+this.p_height+" icScale="+icScale+
         //    " Image section "+iTL[0]+","+iTL[1]+" "+iSect[0]+","+iSect[1])
         ctxt.drawImage(this.p_Image, 
             iTL[0], iTL[1], iSect[0], iSect[1],
             0, 0, canvasWidth, canvasHeight);
         } else {
+        var iwScale = this.p_height / wb[2] ;
         var iTL = [ iwScale * window[1], iwScale * window[0] ];
         // icScale is the number of image pixels per canvas pixel
         var icScale =  (canvasWidth / this.p_height) * (wb[2]) / (window[2]) ;
         iSect = [ canvasHeight/icScale, canvasWidth/icScale];
         //alert("Window boundary "+wb[0]+","+wb[1]+" "+wb[2]+","+wb[3]+
-        //    " Supplied window "+window[0]+","+window[1]+" "+window[2]+","+window[3]+
-        //    " canvas "+canvasWidth+","+canvasHeight+
+        //    " viewport window "+window[0]+","+window[1]+" "+window[2]+","+window[3])
+        //alert("canvas "+canvasWidth+","+canvasHeight)
+        //alert(
         //    " image size="+this.p_width+","+this.p_height+" icScale="+icScale+
         //    " Image section "+iTL[0]+","+iTL[1]+" "+iSect[0]+","+iSect[1])
-        //ctxt.drawImage(this.p_Image, 
-        //    iTL[0], iTL[1], iSect[0], iSect[1],
-        //    0, 0, canvasHeight, canvasWidth);
         ctxt.drawImage(this.p_Image, 
-            //0, 0, this.p_width, this.p_height,
-            -canvasHeight/2, -canvasWidth/2, canvasHeight, canvasWidth);
+            iTL[0], iTL[1], iSect[0], iSect[1],
+            0, 0, canvasWidth, canvasHeight);
         }
     ctxt.restore(); 
     };
@@ -189,17 +192,17 @@ DRAWLIB.m_doDrawBack4 = function(ctxt, canvasWidth, canvasHeight, window) {
         iTL = [ Math.floor((ori[0] / wb[3]) * this.p_height), 
                 Math.floor((ori[1] / wb[3]) * this.p_height)];
         // icScale is the number of image pixels per canvas pixel
-        var icScale = (this.p_width / canvasWidth) / (wb[2] / window[2]);
+        var icScale = (this.p_height / canvasWidth) / (wb[2] / window[2]);
         iSect = [ Math.floor(canvasWidth * icScale),
                   Math.floor(canvasHeight * icScale)];
     }
-    alert("Rotation "+winRot+
-        " Window boundary "+wb[0]+","+wb[1]+" "+wb[2]+","+wb[3]+
-        " Supplied window "+window[0]+","+window[1]+" "+window[2]+","+window[3]+
-        " canvas "+canvasWidth+","+canvasHeight+
-        " this width+height "+this.p_width+","+this.p_height+
-        " image size="+this.p_width+","+this.p_height+" icScale="+icScale+
-        " Image section "+iTL[0]+","+iTL[1]+" "+iSect[0]+","+iSect[1])
+    //alert("Rotation "+winRot+
+    //    " Window boundary "+wb[0]+","+wb[1]+" "+wb[2]+","+wb[3]+
+    //    " Supplied window "+window[0]+","+window[1]+" "+window[2]+","+window[3]+
+    //    " canvas "+canvasWidth+","+canvasHeight+
+    //    " this width+height "+this.p_width+","+this.p_height+
+    //    " image size="+this.p_width+","+this.p_height+" icScale="+icScale+
+    //    " Image section "+iTL[0]+","+iTL[1]+" "+iSect[0]+","+iSect[1])
     ctxt.drawImage(this.p_ImageSet[winRot], 
         iTL[0], iTL[1], iSect[0], iSect[1],
         0, 0, canvasWidth, canvasHeight);

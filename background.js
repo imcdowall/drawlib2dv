@@ -106,13 +106,13 @@ DRAWLIB.m_doDrawBack = function(ctxt, canvasWidth, canvasHeight, window) {
     var pic = this.p_pic;
     var winRot = pic.p_rotation;
     ctxt.save();
-    // Note, for some reason, rotation though 90 / 270 degrees messes up the
-    // image. Use the 4-image approach for more success.
-    // It must be a bug in the way that I handle rotation but I cannot see it for now
     ctxt.translate(canvasWidth/2, canvasHeight/2);
     ctxt.rotate(-Math.PI*winRot*0.5);
     ctxt.translate(-canvasWidth/2, -canvasHeight/2);
 
+    // p_windowBoundary is the original window boundary - it is fixed and should
+    // match the background. it does not change if we zoom, pan or rotate.
+    // it is minx, miny, width, height
     var wb = pic.p_windowBoundary;
     // Work out the image section based on rotation
     var icSect = [0, 0];
@@ -123,11 +123,12 @@ DRAWLIB.m_doDrawBack = function(ctxt, canvasWidth, canvasHeight, window) {
         var icScale =  (canvasWidth / this.p_width) * (wb[2]) / (window[2]) ;
         iSect = [ canvasWidth/icScale, canvasHeight/icScale];
         //alert("Window boundary "+wb[0]+","+wb[1]+" "+wb[2]+","+wb[3]+
-        //    " viewport window "+window[0]+","+window[1]+" "+window[2]+","+window[3])
-        //alert("canvas "+canvasWidth+","+canvasHeight)
+        //    " viewport window "+window[0]+","+window[1]+" "+window[2]+","+window[3]+
+        //    " canvas "+canvasWidth+","+canvasHeight);
+        // DEBUG
         //alert(
         //    " image size="+this.p_width+","+this.p_height+" icScale="+icScale+
-        //    " Image section "+iTL[0]+","+iTL[1]+" "+iSect[0]+","+iSect[1])
+        //    " Image section "+iTL[0]+","+iTL[1]+" "+iSect[0]+","+iSect[1]);
         ctxt.drawImage(this.p_Image, 
             iTL[0], iTL[1], iSect[0], iSect[1],
             0, 0, canvasWidth, canvasHeight);
@@ -137,12 +138,13 @@ DRAWLIB.m_doDrawBack = function(ctxt, canvasWidth, canvasHeight, window) {
         // icScale is the number of image pixels per canvas pixel
         var icScale =  (canvasWidth / this.p_height) * (wb[2]) / (window[2]) ;
         iSect = [ canvasHeight/icScale, canvasWidth/icScale];
+        //DEBUG
         //alert("Window boundary "+wb[0]+","+wb[1]+" "+wb[2]+","+wb[3]+
-        //    " viewport window "+window[0]+","+window[1]+" "+window[2]+","+window[3])
-        //alert("canvas "+canvasWidth+","+canvasHeight)
+        //    " viewport window "+window[0]+","+window[1]+" "+window[2]+","+window[3]+
+        //    " canvas "+canvasWidth+","+canvasHeight);
         //alert(
         //    " image size="+this.p_width+","+this.p_height+" icScale="+icScale+
-        //    " Image section "+iTL[0]+","+iTL[1]+" "+iSect[0]+","+iSect[1])
+        //    " Image section "+iTL[0]+","+iTL[1]+" "+iSect[0]+","+iSect[1]);
         ctxt.drawImage(this.p_Image, 
             iTL[0], iTL[1], iSect[0], iSect[1],
             0, 0, canvasWidth, canvasHeight);

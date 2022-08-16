@@ -32,6 +32,30 @@ DRAWLIB.p_pathEnd = function(aString) {
     };
 
 /**
+ * pic.createImageSp creates an image based drawing item and adds it to the
+ * drawing item list. The image is a 'sprite' or section of a larger image.
+ * The image is created on layer 0.
+ *
+ * @param id Item identifier
+ * @param p_imgName The URL of the image to use
+ * @param iX, iY are the origin values for the sprite in the image file
+ * @param iW, iH are the width and height for the sprite in the image file.
+ * @param x X co-ordinate of the centre point
+ * @param y Y co-ordinate of the centre point
+ * @param winWidth Width of the rectangle in window units
+ * @param winHeight Height of the rectangle in window units
+ * @param angle the rotation clockwise in degrees
+ * @return the created item
+ */
+DRAWLIB.m_createImageSp = function(id, imgName, iX, iY, iW, iH, x, y, winWidth, winHeight, angle) {
+    var oneImg = DRAWLIB.m_createImage(id, imgName, x, y, winWidth, winHeight, angle);
+    oneImg.p_sprite = true;
+    oneImg.p_iX = iX; oneImg.p_iY = iY;
+    oneImg.p_iW = iW; oneImg.p_iH = iH;
+    return oneImg;
+    };
+
+/**
  * pic.createImage creates an image based drawing item and adds it to the
  * drawing item list.
  * The image is created on layer 0.
@@ -59,6 +83,7 @@ DRAWLIB.m_createImage = function(id, imgName, x, y, winWidth, winHeight, angle) 
     oneImg.p_Image = new Image();
     oneImg.p_Image.onload = DRAWLIB.p_onImageLoad;
     oneImg.p_Image.src = imgName;
+    oneImg.p_sprite = false;
     oneImg.doDrawImageWithOffset = DRAWLIB.m_doDrawImageWithOffset;
     oneImg.p_draw = DRAWLIB.p_drawImageItem;
     oneImg.drawOffset = DRAWLIB.m_drawOffsetImage;
@@ -69,7 +94,7 @@ DRAWLIB.m_createImage = function(id, imgName, x, y, winWidth, winHeight, angle) 
 DRAWLIB.m_getStrImg = function() { // Return JSON version of the object
     var itemStr = '{"t":"I","mx":'+this.p_midX+',"my":'+this.p_midY+
          ',"w":'+this.p_winWidth+',"h":'+this.p_winHeight+',"a":'+this.p_angle+
-         ',"img":"'+this.p_imgName+'"';
+         ',"img":"'+this.p_imgName+'","sprite":'+this.p_sprite;
     if (this.p_layer !== 0) { itemStr += ',"layer":'+this.p_layer; }
     if (this.p_z !== 0) { itemStr += ',"z":'+this.p_z; }
     //var connectors = this.getConnectors();
@@ -126,8 +151,14 @@ DRAWLIB.m_doDrawImageWithOffset = function(ctxt, canvasWidth, window,
     ctxt.translate(cMid[0], cMid[1]);
     ctxt.rotate(this.p_radAngle-Math.PI*winRot*0.5);
     ctxt.translate(-cMid[0], -cMid[1]);
-    ctxt.drawImage(this.p_Image, cMid[0]-canWidth/2, cMid[1]-canHeight/2,
-                   canWidth, canHeight ); 
+    var img = this.p_Image;
+    if( img.p_sprite ) {
+      ctxt.drawImage(this.p_Image, img.p_iX, img.p_iY, img.p_iW, img.p_iH,
+                     cMid[0]-canWidth/2, cMid[1]-canHeight/2, canWidth, canHeight ); 
+                   } else {
+      ctxt.drawImage(this.p_Image, cMid[0]-canWidth/2, cMid[1]-canHeight/2,
+                     canWidth, canHeight ); 
+                   }
     ctxt.restore(); 
     };
 

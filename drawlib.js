@@ -116,6 +116,7 @@ DRAWLIB.createPicture = function(canvas, background) {
     onePic.p_setItem = DRAWLIB.p_setItemPic;
     onePic.deleteItem = DRAWLIB.m_deleteItemPic;
     onePic.pick = DRAWLIB.m_pickPic;
+    onePic.pickAll = DRAWLIB.m_pickAllPic;
     onePic.checkPickItem = DRAWLIB.m_checkPickItemPic;
     onePic.contained = DRAWLIB.m_containedPic;
     onePic.drawPoint = DRAWLIB.m_drawPoint;
@@ -233,6 +234,28 @@ DRAWLIB.m_pickPic = function(pX, pY) {
             }
         }
     return pickedItem;
+    };
+
+/**
+ * pic.PickAll finds all items, if any at a page point
+ *
+ * @param pX X co-ordinate of the pick point
+ * @param pY Y co-ordinate of the pick point
+ * @return array of picked items, may be empty. No guarantees of order in the array
+ */ 
+DRAWLIB.m_pickAllPic = function(pX, pY) {
+    var winPos = this.pageToWindowCoords( pX, pY);
+    var pickedItems=[];
+    for (var itemName in this.p_items) {
+        if (this.p_items.hasOwnProperty(itemName)) {
+            var item = this.p_items[itemName];
+            if (item.p_drawable && item.p_visible && item.p_pickable &&
+                item.pick(winPos[0], winPos[1])) {
+              pickedItems.push(item);
+                }
+            }
+        }
+    return pickedItems;
     };
 
 /**

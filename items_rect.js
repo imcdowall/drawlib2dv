@@ -87,6 +87,7 @@ DRAWLIB.m_createRect = function(id, x, y, winWidth, winHeight, angle) {
     oneRect.blankOffset = DRAWLIB.m_blankOffset;
     oneRect.p_redrawOffset = DRAWLIB.p_redrawOffset;
     oneRect.pick = DRAWLIB.m_pickRect;
+    oneRect.boxPick = DRAWLIB.m_boxPick;
     oneRect.setPickable = DRAWLIB.m_setPickable;
     oneRect.getStr = DRAWLIB.m_getStrRect;
     oneRect.getType = DRAWLIB.m_getType;
@@ -723,3 +724,21 @@ DRAWLIB.m_pickRect = function(x, y) {
     return false;
     };
 
+/**
+ * item.boxPick checks if a given point in window co-ordinates lies
+ * roughly on the item.
+ *
+ * @param x X co-ord
+ * @param y Y co-ord
+ * @param margin margin for pick
+ *
+ * @return true for a hit, otherwise false
+ */
+DRAWLIB.m_boxPick = function(x, y, marg) {
+    if (this.p_neverPickable) { return false; }
+    var BB = this.p_pickBB;
+    // Check against crude bounding box
+    if (x < BB[0]-marg || x > BB[2]+marg) { return false; }
+    if (y < BB[1]-marg || y > BB[3]+marg) { return false; }
+    return true;
+}

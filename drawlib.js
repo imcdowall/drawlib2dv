@@ -116,6 +116,7 @@ DRAWLIB.createPicture = function(canvas, background) {
     onePic.p_setItem = DRAWLIB.p_setItemPic;
     onePic.deleteItem = DRAWLIB.m_deleteItemPic;
     onePic.pick = DRAWLIB.m_pickPic;
+    onePic.boxPickMargin = DRAWLIB.m_boxPickPic;
     onePic.pickAll = DRAWLIB.m_pickAllPic;
     onePic.checkPickItem = DRAWLIB.m_checkPickItemPic;
     onePic.contained = DRAWLIB.m_containedPic;
@@ -220,6 +221,39 @@ DRAWLIB.m_pickPic = function(pX, pY) {
             var item = this.p_items[itemName];
             if (item.p_drawable && item.p_visible && item.p_pickable &&
                 item.pick(winPos[0], winPos[1])) {
+                if (pickedItem) {
+                    if (item.p_z > pickedZ) {
+                        pickedItem = item;
+                        pickedZ = item.p_z;
+                        }
+                    }
+                else {
+                    pickedItem = item;
+                    pickedZ = item.p_z;
+                    }
+                }
+            }
+        }
+    return pickedItem;
+    };
+
+/**
+ * pic.PickMargin finds an item, if any at a page point with a given margin
+ *
+ * @param pX X co-ordinate of the pick point
+ * @param pY Y co-ordinate of the pick point
+ * @param margin margin in window co-ordinates of the bounding box
+ * @return the picked item, or undef if none found.
+ */ 
+DRAWLIB.m_boxPickPic = function(pX, pY, margin) {
+    var winPos = this.pageToWindowCoords( pX, pY);
+    var pickedItem; // = undefined
+    var pickedZ;
+    for (var itemName in this.p_items) {
+        if (this.p_items.hasOwnProperty(itemName)) {
+            var item = this.p_items[itemName];
+            if (item.p_drawable && item.p_visible && item.p_pickable &&
+                item.boxPick(winPos[0], winPos[1], margin)) {
                 if (pickedItem) {
                     if (item.p_z > pickedZ) {
                         pickedItem = item;

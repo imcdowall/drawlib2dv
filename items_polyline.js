@@ -81,6 +81,7 @@ DRAWLIB.m_createPolyline = function(id, points) {
     oneItem.blankOffset = DRAWLIB.m_blankOffset;
     oneItem.p_redrawOffset = DRAWLIB.p_redrawOffset;
     oneItem.pick = DRAWLIB.m_pickPoly;
+    oneItem.boxPick = DRAWLIB.m_boxPick;
     oneItem.getStr = DRAWLIB.m_getStrPoly;
     oneItem.getType = DRAWLIB.m_getType;
     oneItem.getSubType = DRAWLIB.m_getSubType;
